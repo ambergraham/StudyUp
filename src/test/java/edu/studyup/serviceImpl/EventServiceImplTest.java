@@ -62,29 +62,46 @@ class EventServiceImplTest {
 		DataStorage.eventData.clear();
 	}
 
+	/**
+	 * Test that we can properly update an Event's name
+	 * @throws StudyUpException
+	 */
 	@Test
 	void testUpdateEventName_GoodCase() throws StudyUpException {
 		int eventID = 1;
 		eventServiceImpl.updateEventName(eventID, "Renamed Event 1");
-		assertEquals("Renamed Event 1", DataStorage.eventData.get(eventID).getName());
+		assertEquals("Renamed Event 1",
+						DataStorage.eventData.get(eventID).getName());
 	}
 	
+	/**
+	 * Test that we can store names up to 20 characters long
+	 * @throws StudyUpException
+	 */
 	@Test
 	void testUpdateEventName_TwentyCharacterName() throws StudyUpException {
 		int eventID = 1;
 		eventServiceImpl.updateEventName(eventID, "A 20 character name!");
-		assertEquals("A 20 character name!", DataStorage.eventData.get(eventID).getName());
+		assertEquals("A 20 character name!",
+						DataStorage.eventData.get(eventID).getName());
 	}
 	
-	
+	/**
+	 * Test that we cannot store names greater than 20 characters
+	 */
 	@Test
 	void testUpdateEventName_TwentyFiveCharacter() {
 		int eventID = 1;
 		Assertions.assertThrows(StudyUpException.class, () -> {
-			eventServiceImpl.updateEventName(eventID, "A 25 character name!!!!!!");
+			eventServiceImpl.updateEventName(eventID,
+												"A 25 character name!!!!!!");
 		});
 	}
 	
+	/**
+	 * Test that passing an invalid event ID to updateEventName throws an
+	 * exception
+	 */
 	@Test
 	void testUpdateEventName_WrongEventID() {
 		int eventID = 3;
@@ -93,6 +110,10 @@ class EventServiceImplTest {
 		  });
 	}
 	
+	/**
+	 * Test that we can add 2 students to an Event
+	 * @throws StudyUpException
+	 */
 	@Test
 	void testAddStudent_AddSecondStudent() throws StudyUpException {
 		int eventID = 1;
@@ -109,6 +130,10 @@ class EventServiceImplTest {
 		assert(students.get(1).equals(student));
 	}
 	
+	/**
+	 * Test that attempting to add a third student throws an exception
+	 * @throws StudyUpException
+	 */
 	@Test
 	void testAddStudent_AddThirdStudent() throws StudyUpException {
 		int eventID = 1;
@@ -132,6 +157,9 @@ class EventServiceImplTest {
 		});
 	}
 	
+	/**
+	 * Test that passing an invalid event ID to addStudentToEvent throws an exception
+	 */
 	@Test
 	void testAddStudentToEvent_WrongEventID() {
 		int eventID = 3;
@@ -146,12 +174,16 @@ class EventServiceImplTest {
 		  });
 	}
 	
+	/**
+	 * Test that getActiveEvents only returns *active* events -- that is,
+	 * ones scheduled in the future.
+	 */
 	@Test
 	void testGetActiveEvents_noPastEvents() {
 		//Create Event 2
 		Event eventPast = new Event();
 		eventPast.setEventID(2);
-		eventPast.setDate(new Date(1));
+		eventPast.setDate(new Date(1)); // Date in 1970, far in the past
 		eventPast.setName("Event 1");
 		Location location = new Location(-122, 37);
 		eventPast.setLocation(location);
@@ -160,11 +192,16 @@ class EventServiceImplTest {
 		List<Event> activeEvents = eventServiceImpl.getActiveEvents();
 		for (Event event : activeEvents) {
 			if (event.getDate().before(new Date())) {
-				fail("getActiveEvents() returned a list that contained a past event");
+				fail("getActiveEvents() returned a list that contained a " 
+						+ "past event");
 			}
 		}
 	}
 	
+	/**
+	 * Test that getActiveEvents does correctly show events scheduled in the
+	 * future.
+	 */
 	@Test
 	void testGetActiveEvents_containsFutureEvents() {
 		//Create Event 2
@@ -181,16 +218,25 @@ class EventServiceImplTest {
 		assertTrue(activeEvents.contains(eventFuture));
 	}
 	
+	/*
+	 * Test that getPastEvents does not return any active events.
+	 */
 	@Test
 	void testGetPastEvents_noActiveEvents() {		
 		List<Event> pastEvents = eventServiceImpl.getPastEvents();
 		for (Event event : pastEvents) {
-			if (event.getDate().after(new Date()) || event.getDate().equals(new Date())) {
-				fail("getPastEvents() returned a list that contained an active event");
+			if (event.getDate().after(new Date())
+					|| event.getDate().equals(new Date())) {
+				fail("getPastEvents() returned a list that contained "
+						+ "an active event");
 			}
 		}
 	}
 	
+	/*
+	 * Test that we can add an event in the past, and that it appears in
+	 * getPastEvents.
+	 */
 	@Test
 	void testGetPastEvents_addPastEvent() {
 		//Create Event 2
@@ -206,6 +252,10 @@ class EventServiceImplTest {
 		assertTrue(pastEvents.contains(eventPast));
 	}
 	
+	/*
+	 * Test that deleting an event correctly removes it from the list of
+	 * events.
+	 */
 	@Test
 	void testDeleteEvent_addAndRemove() {
 		//Create Event 2
