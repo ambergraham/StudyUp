@@ -131,7 +131,7 @@ class EventServiceImplTest {
 	}
 	
 	/**
-	 * Test that attempting to add a third student throws an exception
+	 * Test that attempting to add three students throws an exception
 	 * @throws StudyUpException
 	 */
 	@Test
