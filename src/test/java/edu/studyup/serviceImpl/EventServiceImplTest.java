@@ -54,12 +54,12 @@ class EventServiceImplTest {
 		eventStudents.add(student);
 		event.setStudents(eventStudents);
 		
-		DataStorage.eventData.put(event.getEventID(), event);
+		DataStorage.getEventData().put(event.getEventID(), event);
 	}
 
 	@AfterEach
 	void tearDown() throws Exception {
-		DataStorage.eventData.clear();
+		DataStorage.getEventData().clear();
 	}
 
 	/**
@@ -71,7 +71,7 @@ class EventServiceImplTest {
 		int eventID = 1;
 		eventServiceImpl.updateEventName(eventID, "Renamed Event 1");
 		assertEquals("Renamed Event 1",
-						DataStorage.eventData.get(eventID).getName());
+						DataStorage.getEventData().get(eventID).getName());
 	}
 	
 	/**
@@ -83,7 +83,7 @@ class EventServiceImplTest {
 		int eventID = 1;
 		eventServiceImpl.updateEventName(eventID, "A 20 character name!");
 		assertEquals("A 20 character name!",
-						DataStorage.eventData.get(eventID).getName());
+						DataStorage.getEventData().get(eventID).getName());
 	}
 	
 	/**
@@ -125,7 +125,7 @@ class EventServiceImplTest {
 		student.setId(2);
 		eventServiceImpl.addStudentToEvent(student, eventID);
 		
-		Event event = DataStorage.eventData.get(1);
+		Event event = DataStorage.getEventData().get(1);
 		List<Student> students = event.getStudents();
 		assert(students.get(1).equals(student));
 	}
@@ -187,7 +187,7 @@ class EventServiceImplTest {
 		eventPast.setName("Event 1");
 		Location location = new Location(-122, 37);
 		eventPast.setLocation(location);
-		DataStorage.eventData.put(eventPast.getEventID(), eventPast);
+		DataStorage.getEventData().put(eventPast.getEventID(), eventPast);
 		
 		List<Event> activeEvents = eventServiceImpl.getActiveEvents();
 		for (Event event : activeEvents) {
@@ -212,7 +212,7 @@ class EventServiceImplTest {
 		eventFuture.setName("Event 1");
 		Location location = new Location(-122, 37);
 		eventFuture.setLocation(location);
-		DataStorage.eventData.put(eventFuture.getEventID(), eventFuture);
+		DataStorage.getEventData().put(eventFuture.getEventID(), eventFuture);
 		
 		List<Event> activeEvents = eventServiceImpl.getActiveEvents();
 		assertTrue(activeEvents.contains(eventFuture));
@@ -246,7 +246,7 @@ class EventServiceImplTest {
 		eventPast.setName("Event 1");
 		Location location = new Location(-122, 37);
 		eventPast.setLocation(location);
-		DataStorage.eventData.put(eventPast.getEventID(), eventPast);
+		DataStorage.getEventData().put(eventPast.getEventID(), eventPast);
 		
 		List<Event> pastEvents = eventServiceImpl.getPastEvents();
 		assertTrue(pastEvents.contains(eventPast));
@@ -265,11 +265,11 @@ class EventServiceImplTest {
 		eventPast.setName("Event 1");
 		Location location = new Location(-122, 37);
 		eventPast.setLocation(location);
-		DataStorage.eventData.put(eventPast.getEventID(), eventPast);
+		DataStorage.getEventData().put(eventPast.getEventID(), eventPast);
 		
 		eventServiceImpl.deleteEvent(2);
 		
-		Map<Integer, Event> eventData = DataStorage.eventData;
+		Map<Integer, Event> eventData = DataStorage.getEventData();
 		assertFalse(eventData.containsKey(2));
 	}
 }
